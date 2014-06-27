@@ -1,0 +1,21 @@
+{
+  "welcomeFile": "index.html",
+  "routes": [
+    {
+      "path": "/resources",
+      "target": {
+        "type": "destination",
+        "name": "ui5dist"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "destination",
+        "name": "ui5dist-test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    }
+  ]
+}
