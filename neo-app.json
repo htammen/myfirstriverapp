@@ -16,6 +16,38 @@
         "name": "ui5dist-test-resources"
       },
       "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/rest",
+      "target": {
+        "type": "destination",
+        "name": "localProfileDispatcher"
+      },
+      "description": "local profile dispatcher restful server"
+    },
+    {
+      "path": "/j_spring_security_check",
+      "target": {
+        "type": "destination",
+        "name": "localProfileDispatcherLogin"
+      },
+      "description": "local profile dispatcher restful server"
+    },
+    {
+      "path": "/j_spring_security_logout",
+      "target": {
+        "type": "destination",
+        "name": "localProfileDispatcherLogout"
+      },
+      "description": "local profile dispatcher restful server"
+    },
+    {
+      "path": "/login",
+      "target": {
+        "type": "destination",
+        "name": "localProfileDispatcherLoginFail"
+      },
+      "description": "local profile dispatcher restful server"
     }
-  ]
+]
 }
