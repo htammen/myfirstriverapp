@@ -26,7 +26,7 @@
       "description": "local profile dispatcher restful server"
     },
     {
-      "path": "/j_spring_security_check",
+      "path": "/api",
       "target": {
         "type": "destination",
         "name": "localProfileDispatcherLogin"

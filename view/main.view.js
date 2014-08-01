@@ -14,12 +14,12 @@ sap.ui.jsview("view.main", {
 	*/ 
 	createContent : function(oController) {
         var loginLink = new sap.ui.commons.Link({
-                text: "Login",
-                tooltip: "Melden Sie sich hier an",
+                text: "Logon",
+                tooltip: "Please click hier to log on",
                 visible: { 
                     path: "/login/success",
                     formatter: function(fValue) {
-                        // hier müssen wir den negierten Wert der Model property /login/succes auswerten.
+                        // link is visible when login/success is false
                         if(fValue) {
                             return false;
                         } else {
@@ -32,19 +32,22 @@ sap.ui.jsview("view.main", {
                         oController.login(); 
                     }
         });
+        /* When logged in to the backend we show the username, accesstoken and role in a simple label */
         var loginMessage = new sap.ui.commons.Label({
             text: {
 				parts: [
-					{path: "/login/userName"}
+					{path: "/login/userName"},
+					{path: "/login/accessToken"},
+					{path: "/login/roles"}
 				],
-                formatter: function(fValue) {
-                    return "Welcome " + fValue; 
+                formatter: function(username, accessToken, roles) {
+                    return "Welcome " + username + "; accessToken: " + accessToken + "; roles: " + roles; 
                 }
             },
             visible: { 
                 path: "/login/success",
                 formatter: function(fValue) {
-                    // hier müssen wir den negierten Wert der Model property /login/succes auswerten.
+                    // link is visible when login/success is false
                     if(fValue) {
                         return true;
                     } else {
@@ -59,7 +62,7 @@ sap.ui.jsview("view.main", {
                 visible: { 
                     path: "/login/success",
                     formatter: function(fValue) {
-                        // hier müssen wir den negierten Wert der Model property /login/succes auswerten.
+                        // link is visible when login/success is true
                         if(fValue) {
                             return true;
                         } else {
@@ -73,6 +76,7 @@ sap.ui.jsview("view.main", {
                     }
         });
 
+        // a simple vertical layout to display the links and the message
         var vertLayout = new sap.ui.layout.VerticalLayout(
             "myLayout",
             {

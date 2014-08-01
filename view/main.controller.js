@@ -10,7 +10,9 @@ sap.ui.controller("view.main", {
 		var loginData = {
 			login: {
 				success: false,
-				userName: ""
+				userName: "",
+				accessToken: "",
+				roles: undefined
 			}
 		};
 		// create JSON model instance
@@ -59,39 +61,47 @@ sap.ui.controller("view.main", {
 
 
 	/**
-	 * Methode, die gerufen wird, wenn die Login-Funktion angeklickt wird.
+	 * Eventhandler for the login link
 	 */
 	login: function() {
 		var view = sap.ui.getCore().byId("idLoginDialog");
 		if(view === undefined) {
             view = sap.ui.view({id:"idLoginDialog", viewName: "view.loginDialog", type:sap.ui.core.mvc.ViewType.JS});
 		}
-		// folgender Aufruf ist hier beschrieben: http://bitstructures.com/2007/11/javascript-method-callbacks.html
+		// for the following look here: http://bitstructures.com/2007/11/javascript-method-callbacks.html
 		var obj = this;
 		view.getController().openDialog(function(oData){obj.processLoginSuccess(oData);});
 	},
 	
 	/**
-	 * Callback Methode, die gerufen wird, wenn der Login erfolgreich war.
+	 * callback method that is called when the login was successful
 	 * @param oData
 	 */
 	processLoginSuccess: function(oData) {
+	    // set data that has been delivered by login from backend into the model
 		var oModel = this.getView().getModel();
 		oModel.setProperty("/login/success", true);
-		oModel.setProperty("/login/userName", oData.userName);
+		oModel.setProperty("/login/userName", oData.username);
+		oModel.setProperty("/login/accessToken", oData.access_token);
+		oModel.setProperty("/login/roles", oData.roles);
         var view = sap.ui.getCore().byId("idLoginDialog");
         if(view === undefined) {
             view.destroy();
         }
 	},
 	
+	/**
+	 * eventhandler for the logout link
+	 */
 	logout: function() {
 		var oLogoutModel = new sap.ui.model.json.JSONModel();
-		oLogoutModel.loadData("j_spring_security_logout");
+		oLogoutModel.loadData("api/logout");
 
 		var oModel = this.getView().getModel();
 		oModel.setProperty("/login/success", false);
 		oModel.setProperty("/login/userName", "");
+		oModel.setProperty("/login/accessToken", undefined);
+		oModel.setProperty("/login/roles", undefined);
 	}
 
 });

@@ -12,18 +12,9 @@ sap.ui.controller("view.loginDialog", {
 	onInit: function() {
 		jQuery.sap.require("sap.ui.commons.MessageBox");
 		
-		//create test data
-		var data = {
-//			userName: "meastheadmin",
-//			password: "test1234"
-				userName: "htammen",
-				password: "test1234!"
-		};
 		// create JSON model instance
         var oModel = new view.util.model.json.JSONModelExt();
-        //var oModel = new sap.ui.model.json.JSONModel();
-		// set the data for the model
-		oModel.setData(data);
+
 		// set the model to the core
 		this.oView.setModel(oModel);		
 	},
@@ -55,28 +46,32 @@ sap.ui.controller("view.loginDialog", {
 //	}
 	
 	openDialog: function(fnSuccessCallback) {
+	    // initialize the model with the credentials. So we do not need to do this everytime we test this application
+        this.getView().getModel().setData({
+            userName: "htammen",
+            password: "test1234!"
+        })
+
 		this.fnSuccessCallback = fnSuccessCallback;
 		this.getView().getContent()[0].open();
 	},
 
+    /**
+     * process the click on the login button 
+     */
 	processLogin: function(oEvent, oLoginDialog) {
-	    /* schaltet temporär den Login Dialog aus 
-        var oData = {
-            userName: "htammen"
-        }
-		this.oLoginDialog = oLoginDialog;
-		this.loginCompleted(oData);
-        */	    
 		this.oLoginDialog = oLoginDialog;
 		var oModel = this.getView().getModel();
-		var data = {
-				ajax: true,
-				j_username: oModel.getData().userName, 
-				j_password: oModel.getData().password
-			};
-		oModel.loadDataExt("j_spring_security_check?j_username=htammen&j_password=test1234!", this, this.loginCompleted, this.loginError, data, true, "POST", "application/x-www-form-urlencoded; charset=UTF-8");
+		// We have to provide username and password via URL query parameters because at backend the configuration property 
+		// grails.plugin.springsecurity.rest.login.useRequestParamsCredentials=true
+		// is set. For any reason the provision of this data in json format did not work. 
+		var url = "api/login?username=" + oModel.getData().userName + "&password=" + oModel.getData().password;
+		oModel.loadDataExt(url, this, this.loginCompleted, this.loginError, undefined, true, "POST", "application/x-www-form-urlencoded; charset=UTF-8");
 	},
 	
+	/**
+	 * is called if the login at backend side was successful
+	 */
 	loginCompleted: function(oData) {
 		if(oData.error !== undefined || oData.success === false) {
 			sap.ui.commons.MessageBox.alert(oData.error);
@@ -86,6 +81,9 @@ sap.ui.controller("view.loginDialog", {
 		}
 	},
 
+    /**
+     * is called if the login at backend side was not succcessful
+     */
 	loginError: function(oData) {
 		var message = oData.statusCode + "\n" + oData.statusText;
 		sap.ui.commons.MessageBox.alert(message);
