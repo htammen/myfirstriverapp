@@ -78,7 +78,7 @@ sap.ui.controller("view.main", {
 	 * @param oData
 	 */
 	processLoginSuccess: function(oData) {
-	    // set data that has been delivered by login from backend into the model
+        // set data that has been delivered by login from backend into the model
 		var oModel = this.getView().getModel();
 		oModel.setProperty("/login/success", true);
 		oModel.setProperty("/login/userName", oData.username);
@@ -94,10 +94,14 @@ sap.ui.controller("view.main", {
 	 * eventhandler for the logout link
 	 */
 	logout: function() {
-		var oLogoutModel = new sap.ui.model.json.JSONModel();
-		oLogoutModel.loadData("api/logout");
-
 		var oModel = this.getView().getModel();
+		// hand the accessToken with every request to the server, even the logout request. Otherwise the backend does not know
+		// whom to logout. 
+		var header = {
+            "Authorization": "Bearer " + oModel.getProperty("/login/accessToken")
+        };
+		oModel.loadData("api/logout", undefined, true, "POST", false, false, header );
+
 		oModel.setProperty("/login/success", false);
 		oModel.setProperty("/login/userName", "");
 		oModel.setProperty("/login/accessToken", undefined);
